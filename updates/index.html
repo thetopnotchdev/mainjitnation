@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Archives — JitNation Lore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Uncial+Antiqua&family=Cinzel+Decorative:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="lore.css" />
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════
+       NAVBAR
+  ════════════════════════════════════════ -->
+  <nav>
+    <a class="nav-brand" href="../jitnation.html#home">JitNation</a>
+    <ul class="nav-links">
+      <li><a href="../jitnation.html#home">Home</a></li>
+      <li><a href="../jitnation.html#council">Council</a></li>
+      <li><a href="../jitnation.html#about">About</a></li>
+      <li><a href="index.html" class="active">Lore</a></li>
+    </ul>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+       HEADER
+  ════════════════════════════════════════ -->
+  <header class="lore-header">
+    <p class="eyebrow">The Chronicles</p>
+    <h1 class="lore-title">The Archives</h1>
+    <div class="lore-rule"><span>❖</span></div>
+    <p class="lore-blurb">
+      The history of Jitnation, written down for anyone willing to read it.
+      New chapters are added as the story grows — start anywhere below.
+    </p>
+  </header>
+
+  <!-- ════════════════════════════════════════
+       LORE GRID — auto-built from LORE_FILES
+  ════════════════════════════════════════ -->
+  <div id="loreNotice"></div>
+  <div class="lore-grid" id="loreGrid">
+    <!-- Rendered by JS -->
+  </div>
+
+  <!-- ════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════ -->
+  <footer>
+    <strong>Crimson Court</strong> · All Blood Retained · <a href="../jitnation.html#home">Back to JitNation</a>
+  </footer>
+
+  <!-- ════════════════════════════════════════
+       DATA CONFIG — add new lore entries here
+  ════════════════════════════════════════ -->
+  <script>
+    // ════════════════════════════════════════════════════════════════════
+    // HOW TO ADD A NEW LORE PAGE
+    // 1. Copy /lore/template.html, rename it (e.g. "the-second-war.html"),
+    //    and write your chapter inside it. Fill in its <title>, the
+    //    lore-icon / lore-summary meta tags, the chapter tag, and title.
+    // 2. Add its filename to LORE_FILES below.
+    // That's it — the title, tag, icon, and teaser shown on this page are
+    // all read automatically straight out of the file you just made.
+    //
+    // NOTE: auto-reading only works when this site is viewed through a
+    // real web address (http/https) — a local server or actual hosting.
+    // If you just double-click index.html and open it directly from your
+    // file system, browsers block that file-reading for security reasons,
+    // so chapters will show with a simplified title instead. The pages
+    // themselves still work perfectly either way — this only affects the
+    // preview card here on the Archives page.
+    // ════════════════════════════════════════════════════════════════════
+    const LORE_FILES = [
+      "the-founding.html",
+      "the-first-war.html",
+    ];
+
+    const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
+
+    function humanizeFilename(href) {
+      return href
+        .replace(/\.html?$/i, '')
+        .replace(/^.*\//, '')
+        .replace(/[-_]+/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    async function loadEntry(href) {
+      const fallback = {
+        href, tag: '', icon: '📜',
+        title: humanizeFilename(href),
+        summary: 'Open this chapter to read it.',
+        status: 'simplified',
+      };
+      if (IS_FILE_PROTOCOL) return fallback;
+
+      try {
+        const res = await fetch(href);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+
+        const title = doc.querySelector('.article-title')?.textContent.trim() || fallback.title;
+        const tag = doc.querySelector('.lore-tag')?.textContent.trim() || '';
+        const icon = doc.querySelector('meta[name="lore-icon"]')?.content.trim() || '📜';
+        let summary = doc.querySelector('meta[name="lore-summary"]')?.content.trim();
+        if (!summary) {
+          summary = doc.querySelector('.article-body p')?.textContent.trim() || fallback.summary;
+        }
+        if (summary.length > 140) summary = summary.slice(0, 137).trim() + '…';
+
+        return { href, title, tag, icon, summary, status: 'ok' };
+      } catch (err) {
+        return { ...fallback, icon: '⚠', summary: 'Couldn\'t load this chapter — check the filename in LORE_FILES.', status: 'error' };
+      }
+    }
+
+    function showNotice(text) {
+      const notice = document.getElementById('loreNotice');
+      notice.innerHTML = `<p class="lore-notice">${text}</p>`;
+    }
+
+    async function renderLore() {
+      const grid = document.getElementById('loreGrid');
+      if (!LORE_FILES.length) {
+        grid.innerHTML = '<p class="lore-empty">No chapters written yet. Check back soon.</p>';
+        return;
+      }
+
+      grid.innerHTML = '<p class="lore-empty">Unsealing the archives…</p>';
+      const entries = await Promise.all(LORE_FILES.map(loadEntry));
+      grid.innerHTML = '';
+
+      entries.forEach((entry, i) => {
+        const card = document.createElement('a');
+        card.className = 'lore-card' + (entry.status === 'error' ? ' lore-card-error' : '');
+        card.href = entry.href;
+        card.style.animationDelay = `${i * 0.08}s`;
+        card.innerHTML = `
+          <div class="lore-card-icon">${entry.icon}</div>
+          ${entry.tag ? `<div class="lore-card-tag">${entry.tag}</div>` : ''}
+          <div class="lore-card-title">${entry.title}</div>
+          <div class="lore-card-summary">${entry.summary}</div>
+          <div class="lore-card-cta">Read More →</div>
+        `;
+        grid.appendChild(card);
+      });
+
+      initScrollObserver();
+
+      if (IS_FILE_PROTOCOL) {
+        showNotice('You\'re viewing this directly from your file system, so chapter previews below are simplified. Host this folder (or run a local server) to show full auto-generated previews.');
+      } else if (entries.some(e => e.status === 'error')) {
+        showNotice('Some chapters in LORE_FILES couldn\'t be found — double-check those filenames.');
+      }
+    }
+
+    function initScrollObserver() {
+      const cards = document.querySelectorAll('.lore-card');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      cards.forEach(c => obs.observe(c));
+    }
+
+    renderLore();
+  </script>
+</body>
+</html>

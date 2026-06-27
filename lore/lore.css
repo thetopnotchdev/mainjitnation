@@ -1,0 +1,366 @@
+/* ════════════════════════════════════════════════════════════════
+   JITNATION LORE — SHARED STYLESHEET
+   Used by every page inside /lore/. Edit colors, fonts, or layout
+   here and it updates across the whole Archive at once.
+   ════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black-red:   #0a0000;
+  --deep-red:    #1a0000;
+  --dark-red:    #3a0000;
+  --blood:       #8B0000;
+  --crimson:     #DC143C;
+  --fire-red:    #ff0033;
+  --gold:        #FFD700;
+  --gold-dim:    #b8960c;
+  --iron:        #2F2F2F;
+  --white-blood: #ffe8e8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black-red);
+  color: var(--white-blood);
+  font-family: 'Cinzel', serif;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--black-red); }
+::-webkit-scrollbar-thumb { background: var(--blood); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--crimson); }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── NAVBAR ──────────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 2.5rem;
+  background: rgba(10,0,0,0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(139,0,0,0.5);
+}
+.nav-brand {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-shadow: 0 0 8px rgba(255,215,0,0.5);
+}
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-links a {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--white-blood);
+  text-decoration: none;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+.nav-links a:hover { color: var(--crimson); text-shadow: 0 0 8px var(--crimson); }
+.nav-links a.active { color: var(--gold); text-shadow: 0 0 8px rgba(255,215,0,0.5); }
+
+@media (max-width: 640px) {
+  nav { padding: 0.6rem 1rem; }
+  .nav-brand { font-size: 0.85rem; }
+  .nav-links { gap: 0.6rem; }
+  .nav-links a { font-size: 0.62rem; letter-spacing: 0.06em; }
+  .article-nav a.next { text-align: left; }
+}
+
+/* ─── PAGE HEADER ─────────────────────────────────────────────────── */
+.lore-header {
+  min-height: 46vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8rem 1.5rem 3rem;
+  background: linear-gradient(175deg, var(--black-red) 0%, #1c0000 60%, var(--dark-red) 100%);
+  position: relative;
+}
+.lore-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(5,0,0,0.65) 100%);
+  pointer-events: none;
+}
+.eyebrow {
+  position: relative;
+  z-index: 2;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--blood);
+  margin-bottom: 0.8rem;
+}
+.lore-title {
+  position: relative;
+  z-index: 2;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  font-weight: 900;
+  color: var(--white-blood);
+  text-shadow: 0 0 20px rgba(139,0,0,0.6);
+  letter-spacing: 0.03em;
+  -webkit-text-stroke: 1px rgba(139,0,0,0.4);
+}
+.lore-rule {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.lore-rule span { color: var(--gold); font-size: 1rem; }
+.lore-rule::before, .lore-rule::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: clamp(50px, 12vw, 140px);
+  background: linear-gradient(to right, transparent, var(--blood), transparent);
+}
+.lore-blurb {
+  position: relative;
+  z-index: 2;
+  margin-top: 1.4rem;
+  max-width: 600px;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-weight: 600;
+  line-height: 1.7;
+  color: rgba(255,232,232,0.75);
+}
+
+/* ─── BREADCRUMB ──────────────────────────────────────────────────── */
+.breadcrumb {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 6.5rem 1.5rem 0;
+}
+.breadcrumb a {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.breadcrumb a:hover { color: var(--gold); }
+
+/* ─── ARTICLE PANEL ───────────────────────────────────────────────── */
+main.lore-article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 6rem;
+}
+.lore-tag {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(255,215,0,0.08);
+  border: 1px solid rgba(255,215,0,0.3);
+  padding: 0.3rem 0.8rem;
+  margin-bottom: 1.2rem;
+}
+.article-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 900;
+  color: var(--white-blood);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.6rem;
+  line-height: 1.15;
+}
+.article-meta {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,232,232,0.4);
+  margin-bottom: 2.4rem;
+}
+.article-body {
+  background: linear-gradient(135deg, #0e0000 0%, #1a0505 50%, #0a0000 100%);
+  border: 1px solid var(--blood);
+  border-left: 3px solid var(--blood);
+  padding: 2.4rem 2.2rem;
+}
+.article-body p {
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  line-height: 1.9;
+  font-weight: 600;
+  color: rgba(255,232,232,0.88);
+  margin-bottom: 1.4rem;
+}
+.article-body p:last-child { margin-bottom: 0; }
+.article-body p:first-of-type::first-letter {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 3.2rem;
+  font-weight: 900;
+  color: var(--crimson);
+  float: left;
+  line-height: 0.8;
+  margin: 0.05em 0.1em 0 0;
+  text-shadow: 0 0 14px rgba(220,20,60,0.5);
+}
+.article-body blockquote {
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 1.2rem;
+  margin: 1.6rem 0;
+  font-family: 'Uncial Antiqua', cursive;
+  font-size: 1rem;
+  color: var(--gold);
+  line-height: 1.7;
+}
+.article-body h2 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--crimson);
+  letter-spacing: 0.03em;
+  margin: 2rem 0 1rem;
+}
+
+/* ─── PREV / NEXT NAV ─────────────────────────────────────────────── */
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.4rem;
+  flex-wrap: wrap;
+}
+.article-nav a {
+  flex: 1;
+  min-width: 180px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white-blood);
+  text-decoration: none;
+  border: 1px solid rgba(139,0,0,0.4);
+  padding: 0.9rem 1.1rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.article-nav a:hover { border-color: var(--crimson); background: rgba(139,0,0,0.12); }
+.article-nav a.next { text-align: right; }
+.article-nav .nav-label { display: block; font-size: 0.55rem; opacity: 0.5; margin-bottom: 0.3rem; }
+
+/* ─── LORE INDEX GRID ─────────────────────────────────────────────── */
+.lore-grid {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 6rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.6rem;
+}
+.lore-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0e0000 0%, #1a0505 50%, #0a0000 100%);
+  border: 1px solid var(--blood);
+  padding: 1.6rem 1.5rem;
+  text-decoration: none;
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  opacity: 0;
+}
+.lore-card.visible { animation: fadeInUp 0.6s ease forwards; }
+.lore-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--crimson);
+  box-shadow: 0 8px 30px rgba(139,0,0,0.4);
+}
+.lore-card-icon { font-size: 1.4rem; color: var(--crimson); margin-bottom: 0.8rem; }
+.lore-card-tag {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 0.5rem;
+}
+.lore-card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--white-blood);
+  margin-bottom: 0.6rem;
+}
+.lore-card-summary {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: rgba(255,232,232,0.55);
+  flex: 1;
+}
+.lore-card-cta {
+  margin-top: 1rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--crimson);
+}
+.lore-empty {
+  text-align: center;
+  color: rgba(255,232,232,0.4);
+  font-size: 0.85rem;
+  padding: 2rem;
+  grid-column: 1 / -1;
+}
+#loreNotice {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.lore-notice {
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--gold);
+  background: rgba(255,215,0,0.06);
+  border: 1px solid rgba(255,215,0,0.25);
+  padding: 0.9rem 1.2rem;
+}
+.lore-card-error { border-color: var(--fire-red); }
+.lore-card-error .lore-card-icon { color: var(--fire-red); }
+
+/* ─── FOOTER ──────────────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: var(--black-red);
+  border-top: 1px solid rgba(139,0,0,0.3);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,232,232,0.25);
+}
+footer strong { color: var(--blood); }
+footer a { color: rgba(255,232,232,0.4); text-decoration: none; }
+footer a:hover { color: var(--crimson); }
